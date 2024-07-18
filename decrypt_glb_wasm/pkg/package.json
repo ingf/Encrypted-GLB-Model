@@ -1,0 +1,15 @@
+{
+  "name": "decrypt_glb_wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "decrypt_glb_wasm_bg.wasm",
+    "decrypt_glb_wasm.js",
+    "decrypt_glb_wasm.d.ts"
+  ],
+  "main": "decrypt_glb_wasm.js",
+  "types": "decrypt_glb_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
