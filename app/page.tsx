@@ -3,8 +3,15 @@
 import { useEffect, useState } from 'react'
 import init, { decrypt_glb } from '../decrypt_glb_wasm/pkg/decrypt_glb_wasm.js'
 
+// const mode = 'paratial'
+const mode = ''
+
 async function fetchEncryptedModelInfo() {
-  const response = await fetch('/api/get-encrypted-model')
+  const response = await fetch(
+    mode === 'paratial'
+      ? '/api/encrypted-model-paratial'
+      : '/api/get-encrypted-model',
+  )
   const data = await response.json()
   return {
     encryptedFile: data.encryptedFile,
@@ -35,6 +42,18 @@ async function decryptGLB(encryptedData, key, iv) {
   return decryptedData
 }
 
+async function decryptGLBPartial(encryptedData, key, iv) {
+  // 解密文件的前 1024 字节
+  const encryptedDataParatial = encryptedData.slice(0, 1024)
+  const decryptedData = await decryptGLB(encryptedDataParatial, key, iv)
+
+  // 将解密后的数据与未加密的部分合并
+  const decryptedArrayBuffer = new Uint8Array(encryptedData.byteLength)
+  decryptedArrayBuffer.set(new Uint8Array(decryptedData), 0)
+  decryptedArrayBuffer.set(new Uint8Array(encryptedData.slice(1024)), 1024)
+  return decryptedArrayBuffer
+}
+
 export default function Home() {
   const [modelUrl, setModelUrl] = useState('')
 
@@ -47,12 +66,17 @@ export default function Home() {
         const { encryptedFile, key, iv } = await fetchEncryptedModelInfo()
         const encryptedData = await fetchEncryptedModel(encryptedFile)
 
+        const start = performance.now()
         // Use WebAssembly function to decrypt
         const decryptedData = decrypt_glb(encryptedData, key, iv)
-        console.log('WebAssembly Decrypted GLB file:', decryptedData)
 
-        // const decryptedDataByJS = await decryptGLB(encryptedData, key, iv)
-        // console.log('JS Decrypted GLB file:', decryptedDataByJS)
+        // const decryptedData =
+        //   mode === 'paratial'
+        //     ? await decryptGLBPartial(encryptedData, key, iv)
+        //     : await decryptGLB(encryptedData, key, iv)
+
+        console.log('Time taken:', performance.now() - start)
+        console.log('Decrypted data:', decryptedData)
 
         const decryptedBlob = new Blob([decryptedData], {
           type: 'model/gltf-binary',
