@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import init, { decrypt_glb } from '../decrypt_glb_wasm/pkg/decrypt_glb_wasm.js'
+import init, {
+  decrypt_glb,
+  fetch_data,
+} from '../decrypt_glb_wasm/pkg/decrypt_glb_wasm.js'
 
 // const mode = 'paratial'
 const mode = ''
@@ -62,6 +65,14 @@ export default function Home() {
       try {
         // Initialize WebAssembly module
         await init()
+
+        const l = '/api/encrypted-model-paratial'
+        try {
+          const data = await fetch_data(l)
+          console.log('Data fetched from API:', data)
+        } catch (err) {
+          console.error('Failed to fetch data:', err)
+        }
 
         const { encryptedFile, key, iv } = await fetchEncryptedModelInfo()
         const encryptedData = await fetchEncryptedModel(encryptedFile)
