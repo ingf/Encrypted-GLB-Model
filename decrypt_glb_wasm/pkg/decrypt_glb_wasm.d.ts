@@ -7,21 +7,13 @@
 * @returns {Promise<Uint8Array>}
 */
 export function decrypt_glb(encrypted_data: Uint8Array, key: Uint8Array, iv: Uint8Array): Promise<Uint8Array>;
-/**
-* @param {string} url
-* @returns {Promise<any>}
-*/
-export function fetch_data(url: string): Promise<any>;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly decrypt_glb: (a: number, b: number, c: number) => number;
-  readonly fetch_data: (a: number, b: number) => number;
-  readonly __wbindgen_malloc: (a: number, b: number) => number;
-  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
-  readonly __wbindgen_export_2: WebAssembly.Table;
+  readonly __wbindgen_export_0: WebAssembly.Table;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h8c7f23198c64c5ee: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly wasm_bindgen__convert__closures__invoke2_mut__h18666624b4f52928: (a: number, b: number, c: number, d: number) => void;
